@@ -1,0 +1,64 @@
+
+package "main" {
+	interface "Observer" as main.Observer {
+		+Notify(p: main.Param)
+	}
+}
+
+
+	main.Observer ..> main.Param : <<use>> 
+
+package "main" {
+	class "Observer1" as main.Observer1 <<E,#FFCC00>> {
+		+Notify(p: main.Param)
+	}
+}
+
+
+	main.Observer1 ..> main.Param : <<use>> 
+
+package "main" {
+	class "Observer2" as main.Observer2 <<E,#FFCC00>> {
+		+Notify(p: main.Param)
+	}
+}
+
+
+	main.Observer2 ..> main.Param : <<use>> 
+
+package "main" {
+	class "Param" as main.Param <<V,Orchid>>
+}
+
+
+
+package "main" {
+	class "Something" as main.Something <<V,Orchid>> {
+		+Subject: main.Subject
+	}
+}
+
+	main.Something --> main.Subject
+
+
+package "main" {
+	class "Subject" as main.Subject <<E,#FFCC00>> {
+		-mu: sync.RWMutex
+		-observers: []main.Observer
+		+AddObserver(o: main.Observer)
+		+DeleteObserver(o: main.Observer)
+		+Notify(p: main.Param)
+	}
+}
+
+	main.Subject --> main.Observer
+
+	main.Subject ..> main.Observer : <<use>> 
+	main.Subject ..> main.Observer : <<use>> 
+	main.Subject ..> main.Param : <<use>> 
+
+	main.Observer1 -up-|> main.Observer
+	main.Observer2 -up-|> main.Observer
+	main.Something -up-|> main.Observer
+	main.Subject -up-|> main.Observer
+
